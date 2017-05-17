@@ -5,30 +5,12 @@ import (
 	"github.com/faiface/pixel/imdraw"
 )
 
+type Element interface {
+	Bounds() pixel.Rect
+	Render() interface{}
+}
+
 var backend = make(map[Element]func())
-
-func Button(onClick func(), content Element) *ButtonElement {
-	// record onClick for Button region
-	button := &ButtonElement{
-		Content: content,
-		OnClick: onClick,
-	}
-	backend[button] = onClick
-	return button
-}
-
-type ButtonElement struct {
-	Content Element
-	OnClick func()
-}
-
-func (b *ButtonElement) Bounds() pixel.Rect {
-	return b.Content.Bounds()
-}
-
-func (b *ButtonElement) Render() interface{} {
-	return b.Content.Render()
-}
 
 type BoxElement struct {
 	X, Y          float64
@@ -40,11 +22,6 @@ func (b *BoxElement) Bounds() pixel.Rect {
 		Min: pixel.V(b.X, b.Y),
 		Max: pixel.V(b.X+b.Width, b.Y+b.Height),
 	}
-}
-
-type Element interface {
-	Bounds() pixel.Rect
-	Render() interface{}
 }
 
 func Box(x, y float64, width, height float64) *BoxElement {
@@ -82,4 +59,27 @@ func (b *BoxElement) Render() interface{} {
 	imd.Polygon(0)
 
 	return imd
+}
+
+func Button(onClick func(), content Element) *ButtonElement {
+	// record onClick for Button region
+	button := &ButtonElement{
+		Content: content,
+		OnClick: onClick,
+	}
+	backend[button] = onClick
+	return button
+}
+
+type ButtonElement struct {
+	Content Element
+	OnClick func()
+}
+
+func (b *ButtonElement) Bounds() pixel.Rect {
+	return b.Content.Bounds()
+}
+
+func (b *ButtonElement) Render() interface{} {
+	return b.Content.Render()
 }
