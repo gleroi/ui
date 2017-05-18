@@ -25,19 +25,20 @@ func run() {
 		log.Print("button clicked!")
 	}, Box(50, 50, 150, 100))
 
-	var result interface{} = b
-	done := false
-	for !done {
-		switch t := result.(type) {
-		case Element:
-			result = t.Render()
-		case *imdraw.IMDraw:
-			done = true
-		}
-	}
-	imd := result.(*imdraw.IMDraw)
-
 	for !win.Closed() {
+
+		var result interface{} = b
+		done := false
+		for !done {
+			switch t := result.(type) {
+			case Element:
+				result = t.Render()
+			case *imdraw.IMDraw:
+				done = true
+			}
+		}
+		imd := result.(*imdraw.IMDraw)
+
 		if win.JustReleased(pixelgl.MouseButtonLeft) {
 			clickPosition := win.MousePosition()
 			for elt, handler := range backend {
